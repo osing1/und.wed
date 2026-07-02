@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Panel - Undangan Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f3f4f6;
+  color: #1f2937;
+  min-height: 100vh;
+}
+
+/* LOGIN */
+.login-screen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #46392E 0%, #1e1f1e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.login-screen.hidden { display: none; }
+.login-box {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 380px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  text-align: center;
+}
+.login-box h1 {
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: #46392E;
+}
+.login-box p {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 25px;
+}
+.login-box input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 15px;
+  font-family: inherit;
+}
+.login-box input:focus {
+  outline: none;
+  border-color: #46392E;
+}
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  background: #46392E;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.login-error {
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 10px;
+  display: none;
+}
+
+/* LAYOUT */
+.admin-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+}
+@media (max-width: 768px) {
+  .admin-layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .sidebar.mobile-open { display: block; position: fixed; inset: 0; z-index: 100; width: 260px; }
+}
+
+/* SIDEBAR */
+.sidebar {
+  background: #1f2937;
+  color: white;
+  padding: 25px 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.sidebar-header {
+  padding: 0 25px 20px;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 15px;
+}
+.sidebar-header h2 {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+.sidebar-header p {
+  font-size: 11px;
+  color: #9ca3af;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 25px;
+  color: #d1d5db;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+}
+.nav-item:hover {
+  background: #374151;
+  color: white;
+}
+.nav-item.active {
+  background: #374151;
+  color: white;
+  border-left-color: #f59e0b;
+}
+.nav-item i { width: 18px; text-align: center; }
+
+/* MAIN */
+.main-content {
+  padding: 30px;
+  overflow-x: hidden;
+}
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+}
+.page-subtitle {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+.btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+.btn-primary { background: #46392E; color: white; }
+.btn-primary:hover { background: #2d241d; }
+.btn-success { background: #10b981; color: white; }
+.btn-success:hover { background: #059669; }
+.btn-danger { background: #ef4444; color: white; }
+.btn-secondary { background: #6b7280; color: white; }
+
+/* CARD */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* FORM */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+}
+.form-group { margin-bottom: 15px; }
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #374151;
+}
+.form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.form-control:focus {
+  outline: none;
+  border-color: #46392E;
+  box-shadow: 0 0 0 3px rgba(70,57,46,0.1);
+}
+textarea.form-control {
+  resize: vertical;
+  min-height: 80px;
+}
+.form-hint {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* TABS */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* TABLE */
+.table-wrap { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+th {
+  background: #f9fafb;
+  font-weight: 600;
+  font-size: 12px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+tr:hover { background: #f9fafb; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #10b981;
+  color: white;
+  padding: 14px 20px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  z-index: 9999;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform: translateX(400px);
+  transition: transform 0.3s;
+}
+.toast.show { transform: translateX(0); }
+.toast.error { background: #ef4444; }
+
+/* LIST ITEM */
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.list-item-info { flex: 1; }
+.list-item-title {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 3px;
+}
+.list-item-sub {
+  font-size: 11px;
+  color: #6b7280;
+}
+.list-item-actions {
+  display: flex;
+  gap: 6px;
+}
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+.icon-btn.edit { background: #dbeafe; color: #1e40af; }
+.icon-btn.delete { background: #fee2e2; color: #991b1b; }
+.icon-btn:hover { transform: scale(1.1); }
+
+/* COLOR PICKER */
+.color-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.color-input input[type="color"] {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 2px;
+}
+
+/* MOBILE MENU */
+.mobile-toggle {
+  display: none;
+  background: #46392E;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+@media (max-width: 768px) {
+  .mobile-toggle { display: inline-flex; }
+  .main-content { padding: 20px 15px; }
+}
+
+/* INFO BOX */
+.info-box {
+  background: #dbeafe;
+  border-left: 4px solid #3b82f6;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.info-box strong { color: #1e40af; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <h1><i class="fas fa-lock"></i> Admin Panel</h1>
+    <p>Masuk untuk mengelola undangan</p>
+    <input type="password" id="loginPassword" placeholder="Password" onkeypress="if(event.key==='Enter')doLogin()">
+    <button onclick="doLogin()">Masuk</button>
+    <div class="login-error" id="loginError">Password salah!</div>
+  </div>
+</div>
+
+<!-- ADMIN LAYOUT -->
+<div class="admin-layout" id="adminLayout" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2><i class="fas fa-ring"></i> Admin Panel</h2>
+      <p>Undangan Digital v1.0</p>
+    </div>
+    <div class="nav-item active" onclick="showTab('dashboard', this)">
+      <i class="fas fa-tachometer-alt"></i> Dashboard
+    </div>
+    <div class="nav-item" onclick="showTab('config', this)">
+      <i class="fas fa-plug"></i> Konfigurasi API
+    </div>
+    <div class="nav-item" onclick="showTab('settings', this)">
+      <i class="fas fa-cog"></i> Pengaturan Umum
+    </div>
+    <div class="nav-item" onclick="showTab('couple', this)">
+      <i class="fas fa-heart"></i> Mempelai
+    </div>
+    <div class="nav-item" onclick="showTab('events', this)">
+      <i class="fas fa-calendar-alt"></i> Acara
+    </div>
+    <div class="nav-item" onclick="showTab('story', this)">
+      <i class="fas fa-book"></i> Story
+    </div>
+    <div class="nav-item" onclick="showTab('gallery', this)">
+      <i class="fas fa-images"></i> Galeri
+    </div>
+    <div class="nav-item" onclick="showTab('gifts', this)">
+      <i class="fas fa-gift"></i> Amplop Digital
+    </div>
+    <div class="nav-item" onclick="showTab('theme', this)">
+      <i class="fas fa-palette"></i> Tema & Warna
+    </div>
+    <div class="nav-item" onclick="showTab('ucapan', this)">
+      <i class="fas fa-comments"></i> Ucapan Tamu
+    </div>
+    <div class="nav-item" onclick="logout()" style="margin-top: 30px; color: #f87171;">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- DASHBOARD -->
+    <div class="tab-content active" id="tab-dashboard">
+      <div class="page-header">
+        <div>
+          <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+          <h1 class="page-title">Dashboard</h1>
+          <p class="page-subtitle">Ringkasan data undangan Anda</p>
+        </div>
+        <button class="btn btn-primary" onclick="previewSite()">
+          <i class="fas fa-eye"></i> Preview Undangan
+        </button>
+      </div>
+
+      <div class="info-box">
+        <strong>🎉 Selamat Datang!</strong><br>
+        Sistem undangan digital ini berjalan di <strong>GitHub Pages</strong> dengan backend <strong>npoint.io</strong> (gratis, tanpa server).
+        <br><br>
+        <strong>Langkah pertama:</strong> Buka tab "Konfigurasi API" untuk menghubungkan ke npoint.io.
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+        <div class="card" style="margin: 0;">
+          <div style="font-size: 12px; color: #6b7280; text-transform: uppercase;">Total Ucapan</div>
+          <div style="font-size: 32px; font-weight: 700; color: #46392E; margin-top: 5px;" id="statUcapan">0</div>
+        </div>
+        <div class="card" style="margin: 0;">
+          <div style="font-size: 12px; color: #6b7280; text-transform: uppercase;">Konfirmasi Hadir</div>
+          <div style="font-size: 32px; font-weight: 700; color: #10b981; margin-top: 5px;" id="statHadir">0</div>
+        </div>
+        <div class="card" style="margin: 0;">
+          <div style="font-size: 12px; color: #6b7280; text-transform: uppercase;">Total Tamu</div>
+          <div style="font-size: 32px; font-weight: 700; color: #3b82f6; margin-top: 5px;" id="statTamu">0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span><i class="fas fa-info-circle"></i> Status Koneksi</span>
+        </div>
+        <div style="font-size: 13px; line-height: 1.8;">
+          <p><strong>Data API:</strong> <code id="infoApi" style="background: #f3f4f6; padding: 3px 8px; border-radius: 4px; word-break: break-all;">Belum dikonfigurasi</code></p>
+          <p><strong>Ucapan API:</strong> <code id="infoUcapanApi" style="background: #f3f4f6; padding: 3px 8px; border-radius: 4px; word-break: break-all;">Belum dikonfigurasi</code></p>
+          <p><strong>Status:</strong> <span id="infoStatus" style="color: #ef4444;">● Offline</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIG API -->
+    <div class="tab-content" id="tab-config">
+      <div class="page-header">
+        <div>
+          <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+          <h1 class="page-title">Konfigurasi API</h1>
+          <p class="page-subtitle">Hubungkan ke npoint.io (backend gratis)</p>
+        </div>
+        <button class="btn btn-success" onclick="saveConfig()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+      </div>
+
+      <div class="info-box">
+        <strong>📋 Cara Setup npoint.io:</strong>
+        <ol style="margin-top: 10px; padding-left: 20px;">
+          <li>Buka <a href="https://www.npoint.io/" target="_blank" style="color: #1e40af;">https://www.npoint.io/</a></li>
+          <li>Daftar akun gratis (bisa pakai Google)</li>
+          <li>Klik <strong>"Create new bin"</strong></li>
+          <li>Copy isi file <code>data.json</code> dari repo ini, paste ke sana</li>
+          <li>Klik <strong>Save</strong>, copy URL bin (format: <code>https://api.npoint.io/xxxxx</code>)</li>
+          <li>Buat 1 bin lagi untuk ucapan (kosongkan saja, isi <code>[]</code>)</li>
+          <li>Paste kedua URL di bawah ini</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-title">URL API</div>
+        <div class="form-group">
+          <label class="form-label">Data API URL (untuk konten undangan)</label>
+          <input type="url" class="form-control" id="cfg_data_api" placeholder="https://api.npoint.io/xxxxxxxxxxxx">
+          <div class="form-hint">URL bin npoint.io yang berisi data undangan</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ucapan API URL (untuk RSVP & ucapan tamu)</label>
+          <input type="url" class="form-control" id="cfg_ucapan_api" placeholder="https://api.npoint.io/yyyyyyyyyyyy">
+          <div class="form-hint">URL bin npoint.io terpisah untuk ucapan (buat bin baru, isi dengan [])</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password Admin</label>
+          <input type="text" class="form-control" id="cfg_password" placeholder="12345" value="12345">
+          <div class="form-hint">Password untuk akses admin panel (default: 12345)</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Test Koneksi</div>
+        <button class="btn btn-primary" onclick="testConnection()">
+          <i class="fas fa-plug"></i> Test Koneksi
+        </button>
+        <div id="testResult" style="margin-top: 15px; font-size: 13px;"></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="tab-content" id="tab-settings">
+      <div class="page-header">
+        <div>
+          <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+          <h1 class="page-title">Pengaturan Umum</h1>
+          <p class="page-subtitle">Konfigurasi dasar undangan</p>
+        </div>
+        <button class="btn btn-success" onclick="saveSettings()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Informasi Dasar</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Judul Cover</label>
+            <input type="text" class="form-control" id="set_cover_title" placeholder="The Wedding Of">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tanggal Acara Utama</label>
+            <input type="datetime-local" class="form-control" id="set_event_date">
+            <div class="form-hint">Untuk countdown</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">URL Musik Background</label>
+            <input type="url" class="form-control" id="set_music_url" placeholder="https://...">
+            <div class="form-hint">File MP3 atau URL audio</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">URL Video (YouTube embed)</label>
+            <input type="url" class="form-control" id="set_video_url" placeholder="https://www.youtube.com/embed/...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nomor WhatsApp (Footer)</label>
+            <input type="text" class="form-control" id="set_wa_number" placeholder="6285123569250">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Hero Section</div>
+        <div class="form-group">
+          <label class="form-label">URL Gambar Hero</label>
+          <input type="url" class="form-control" id="set_hero_image" placeholder="https://...">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ayat / Kutipan</div>
+        <div class="form-group">
+          <label class="form-label">Teks Ayat</label>
+          <textarea class="form-control" id="set_ayat_text" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Sumber Ayat</label>
+          <input type="text" class="form-control" id="set_ayat_source" placeholder="— QS. Ar-Rum : 21 —">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Section Terima Kasih</div>
+        <div class="form-group">
+          <label class="form-label">URL Gambar Thank You</label>
+          <input type="url" class="form-control" id="set_thank_image" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teks Terima Kasih</label>
+          <textarea class="form-control" id="set_thank_text" rows="4"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- COUPLE -->
+    <div class="tab-content" id="tab-couple">
+      <div class="page-header">
+        <div>
+          <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+          <h1 class="page-title">Data Mempelai</h1>
+          <p class="page-subtitle">Informasi mempelai pria & wanita</p>
+        </div>
+        <button class="btn btn-success" onclick="saveCouple()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-male" style="color:#3b82f6;"></i> Mempelai Pria</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Nama Lengkap</label>
+            <input type="text" class="form-control" id="set_groom_name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nama Panggilan</label>
+            <input type="text" class="form-control" id="set_groom_short">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Username Instagram</label>
+            <input type="text" class="form-control" id="set_groom_ig" placeholder="@username">
+          </div>
+          <div class="form-group">
+            <label class="form-label">URL Instagram</label>
+            <input type="url" class="form-control" id="set_groom_ig_url">
+          </div>
+          <div class="form-group" style="grid-column: 1/-1;">
+            <label class="form-label">Nama Orang Tua</label>
+            <input type="text" class="form-control" id="set_groom_parents" placeholder="Ayah ... & Ibu ...">
+          </div>
+          <div class="form-group" style="grid-column: 1/-1;">
+            <label class="form-label">Alamat</label>
+            <input type="text" class="form-control" id="set_groom_address">
+          </div>
+          <div class="form-group" style="grid-column: 1/-1;">
+            <label class="form-label">URL Foto</label>
+            <input type="url" class="form-control" id="set_groom_image">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="fas fa-female" style="color:#ec4899;"></i> Mempelai Wanita</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Nama Lengkap</label>
+            <input type="text" class="form-control" id="set_bride_name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nama Panggilan</label>
+            <input type="text" class="form-control" id="set_bride_short">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Username Instagram</label>
+            <input type="text" class="form-control" id="set_bride_ig" placeholder="@username">
+          </div>
+          <div class="form-group">
+            <label class="form-label">URL Instagram</label>
+            <input type="url" class="form-control" id="set_bride_ig_url">
+          </div>
+          <div class="form-group" style="grid-column: 1/-1;">
+            <label class="form-label">Nama Orang Tua</label>
+            <input type="text" class="form-control" id="set_bride_parents">
+          </div>
+          <div class="form-group" style="grid-column: 1/-1;">
+            <label class="form-label">Alamat</label>
+            <input type="text" class="form-control" id="set_bride_address">
+          </div>
+          <div class="form-group" style="grid-column: 1/-1;">
+            <label class="form-label">URL Foto</label>
+            <input type="url" class="form-control" id="set_bride_image">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVENTS -->
+    <div class="tab-content" id="tab-events">
+      <div class="page-header">
+        <div>
+          <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+          <h1 class="page-title">Data Acara</h1>
+          <p class="page-subtitle">Kelola acara akad & resepsi</p>
+        </div>
+        <button class="btn btn-primary" onclick="addEvent()">
+          <i class="fas fa-plus"></i> Tambah Acara
+        </button>
+      </div>
+      <div class="card">
+        <div id="eventsList"></div>
+      </div>
+    </div>
+
+    <!-- STORY -->
+    <div class="tab-content" id="tab-story">
+      <div class="page-header">
+        <div>
+          <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+          <h1 class="page-title">Love Story</h1>
+          <p class="page-subtitle">Kisah perjalanan cinta kalian</p>
+        </div>
+        <button class="btn btn-primary" onclick="addStory()">
+          <i class="fas fa-plus"></i> Tambah Story
+        </button>
+      </div>
+      <div class="card">
+        <div id="storyList"></div>
+      </div>
+    </div>
+
+    <!-- GALLERY -->
+    <div class="tab-content" id="tab-gallery">
+      <div class="page-header">
+        <div>
+          <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+          <h1 class="page-title">Galeri Foto</h1>
+          <p class="page-subtitle">Kumpulan foto prewedding & momen</p>
+        </div>
+        <button class="btn btn-primary" onclick="addGallery()">
+          <i class="fas fa-plus"></i> Tambah Foto
+        </button>
+      </div>
+      <div class="card">
+        <div id="galleryList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;"></div>
+      </div>
+    </div>
+
+    <!-- GIFTS -->
+    <div class="tab-content" id="tab-gifts">
+      <div class="page-header">
+        <div>
+          <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+          <h1 class="page-title">Amplop Digital</h1>
+          <p class="page-subtitle">Nomor rekening untuk hadiah</p>
+        </div>
+        <button class="btn btn-primary" onclick="addGift()">
+          <i class="fas fa-plus"></i> Tambah Rekening
+        </button>
+      </div>
+      <div class="card">
+        <div id="giftsList"></div>
+      </div>
+    </div>
+
+    <!-- THEME -->
+    <div class="tab-content" id="tab-theme">
+      <div class="page-header">
+        <div>
+          <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+          <h1 class="page-title">Tema & Warna</h1>
+          <p class="page-subtitle">Kustomisasi warna undangan</p>
+        </div>
+        <button class="btn btn-success" onclick="saveTheme()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+      </div>
+      <div class="card">
+        <div class="card-title">Palet Warna</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Warna Primary (Background)</label>
+            <div class="color-input">
+              <input type="color" id="set_color_primary" value="#E1E6ED">
+              <input type="text" class="form-control" id="set_color_primary_text" value="#E1E6ED">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Warna Heading (Teks)</label>
+            <div class="color-input">
+              <input type="color" id="set_color_heading" value="#1e1f1e">
+              <input type="text" class="form-control" id="set_color_heading_text" value="#1e1f1e">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Warna Accent</label>
+            <div class="color-input">
+              <input type="color" id="set_color_accent" value="#46392E">
+              <input type="text" class="form-control" id="set_color_accent_text" value="#46392E">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Warna Button</label>
+            <div class="color-input">
+              <input type="color" id="set_color_button" value="#46392E">
+              <input type="text" class="form-control" id="set_color_button_text" value="#46392E">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UCAPAN -->
+    <div class="tab-content" id="tab-ucapan">
+      <div class="page-header">
+        <div>
+          <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+          <h1 class="page-title">Ucapan Tamu</h1>
+          <p class="page-subtitle">Daftar ucapan & konfirmasi kehadiran</p>
+        </div>
+        <button class="btn btn-secondary" onclick="loadUcapanAdmin()">
+          <i class="fas fa-sync"></i> Refresh
+        </button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table id="ucapanTable">
+            <thead>
+              <tr>
+                <th>Nama</th>
+                <th>Status</th>
+                <th>Jumlah</th>
+                <th>Ucapan</th>
+                <th>Waktu</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="ucapanTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <i class="fas fa-check-circle"></i>
+  <span id="toastMsg">Berhasil!</span>
+</div>
+
+<script>
+/* ================================================================
+   KONFIGURASI - Disimpan di localStorage
+   ================================================================ */
+let CONFIG = JSON.parse(localStorage.getItem('undangan_config') || '{}');
+let currentData = {};
+let eventsData = [];
+let storiesData = [];
+let galleryData = [];
+let giftsData = [];
+
+/* ================================================================
+   LOGIN
+   ================================================================ */
+function doLogin() {
+  const pwd = document.getElementById('loginPassword').value;
+  const adminPwd = CONFIG.password || '12345';
+  if (pwd === adminPwd) {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('adminLayout').style.display = 'grid';
+    localStorage.setItem('admin_auth', '1');
+    initAdmin();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+function logout() {
+  localStorage.removeItem('admin_auth');
+  location.reload();
+}
+
+// Auto-login jika sudah auth
+if (localStorage.getItem('admin_auth') === '1') {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('adminLayout').style.display = 'grid';
+  initAdmin();
+}
+
+/* ================================================================
+   INIT
+   ================================================================ */
+async function initAdmin() {
+  // Load config
+  document.getElementById('cfg_data_api').value = CONFIG.data_api || '';
+  document.getElementById('cfg_ucapan_api').value = CONFIG.ucapan_api || '';
+  document.getElementById('cfg_password').value = CONFIG.password || '12345';
+  
+  // Update info
+  document.getElementById('infoApi').textContent = CONFIG.data_api || 'Belum dikonfigurasi';
+  document.getElementById('infoUcapanApi').textContent = CONFIG.ucapan_api || 'Belum dikonfigurasi';
+  
+  if (CONFIG.data_api) {
+    try {
+      const res = await fetch(CONFIG.data_api);
+      currentData = await res.json();
+      document.getElementById('infoStatus').innerHTML = '<span style="color: #10b981;">● Online</span>';
+      populateSettings();
+      eventsData = currentData.events || [];
+      storiesData = currentData.stories || [];
+      galleryData = currentData.gallery || [];
+      giftsData = currentData.gifts || [];
+      renderEventsList();
+      renderStoryList();
+      renderGalleryList();
+      renderGiftsList();
+      loadUcapanAdmin();
+    } catch (e) {
+      document.getElementById('infoStatus').innerHTML = '<span style="color: #ef4444;">● Error</span>';
+      showToast('Gagal memuat data', 'error');
+    }
+  }
+}
+
+/* ================================================================
+   TAB NAVIGATION
+   ================================================================ */
+function showTab(tabName, el) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + tabName).classList.add('active');
+  if (el) el.classList.add('active');
+  if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('mobile-open');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('mobile-open');
+}
+
+/* ================================================================
+   SAVE CONFIG
+   ================================================================ */
+function saveConfig() {
+  CONFIG.data_api = document.getElementById('cfg_data_api').value.trim();
+  CONFIG.ucapan_api = document.getElementById('cfg_ucapan_api').value.trim();
+  CONFIG.password = document.getElementById('cfg_password').value.trim() || '12345';
+  localStorage.setItem('undangan_config', JSON.stringify(CONFIG));
+  showToast('Konfigurasi berhasil disimpan!');
+  setTimeout(() => location.reload(), 1000);
+}
+
+async function testConnection() {
+  const result = document.getElementById('testResult');
+  result.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing...';
+  
+  try {
+    if (!CONFIG.data_api) {
+      result.innerHTML = '<span style="color: #ef4444;">❌ Data API belum dikonfigurasi</span>';
+      return;
+    }
+    const res = await fetch(CONFIG.data_api);
+    const data = await res.json();
+    result.innerHTML = `<span style="color: #10b981;">✅ Data API berhasil terhubung! Ditemukan ${Object.keys(data).length} field data.</span>`;
+  } catch (e) {
+    result.innerHTML = `<span style="color: #ef4444;">❌ Gagal terhubung: ${e.message}</span>`;
+  }
+}
+
+/* ================================================================
+   POPULATE FORMS
+   ================================================================ */
+function populateSettings() {
+  const d = currentData;
+  const fields = [
+    'cover_title', 'event_date', 'music_url', 'video_url', 'wa_number',
+    'hero_image', 'ayat_text', 'ayat_source', 'thank_image', 'thank_text',
+    'groom_name', 'groom_short', 'groom_ig', 'groom_ig_url', 'groom_parents', 'groom_address', 'groom_image',
+    'bride_name', 'bride_short', 'bride_ig', 'bride_ig_url', 'bride_parents', 'bride_address', 'bride_image'
+  ];
+  fields.forEach(f => {
+    const el = document.getElementById('set_' + f);
+    if (el && d[f] !== undefined) el.value = d[f];
+  });
+  
+  // Theme
+  if (d.theme) {
+    ['primary', 'heading', 'accent', 'button'].forEach(c => {
+      const color = d.theme['color_' + c] || '';
+      const el = document.getElementById('set_color_' + c);
+      const elText = document.getElementById('set_color_' + c + '_text');
+      if (el && color) el.value = color;
+      if (elText && color) elText.value = color;
+    });
+  }
+}
+
+/* ================================================================
+   SAVE TO NPOINT
+   ================================================================ */
+async function saveToNpoint(data) {
+  if (!CONFIG.data_api) {
+    showToast('Data API belum dikonfigurasi!', 'error');
+    return false;
+  }
+  try {
+    await fetch(CONFIG.data_api, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' }
+    });
+    return true;
+  } catch (e) {
+    showToast('Error: ' + e.message, 'error');
+    return false;
+  }
+}
+
+/* ================================================================
+   SAVE FUNCTIONS
+   ================================================================ */
+async function saveSettings() {
+  const data = {
+    cover_title: document.getElementById('set_cover_title').value,
+    event_date: document.getElementById('set_event_date').value,
+    music_url: document.getElementById('set_music_url').value,
+    video_url: document.getElementById('set_video_url').value,
+    wa_number: document.getElementById('set_wa_number').value,
+    hero_image: document.getElementById('set_hero_image').value,
+    ayat_text: document.getElementById('set_ayat_text').value,
+    ayat_source: document.getElementById('set_ayat_source').value,
+    thank_image: document.getElementById('set_thank_image').value,
+    thank_text: document.getElementById('set_thank_text').value
+  };
+  
+  if (await saveToNpoint(data)) {
+    showToast('Pengaturan berhasil disimpan!');
+  }
+}
+
+async function saveCouple() {
+  const data = {
+    groom_name: document.getElementById('set_groom_name').value,
+    groom_short: document.getElementById('set_groom_short').value,
+    groom_ig: document.getElementById('set_groom_ig').value,
+    groom_ig_url: document.getElementById('set_groom_ig_url').value,
+    groom_parents: document.getElementById('set_groom_parents').value,
+    groom_address: document.getElementById('set_groom_address').value,
+    groom_image: document.getElementById('set_groom_image').value,
+    bride_name: document.getElementById('set_bride_name').value,
+    bride_short: document.getElementById('set_bride_short').value,
+    bride_ig: document.getElementById('set_bride_ig').value,
+    bride_ig_url: document.getElementById('set_bride_ig_url').value,
+    bride_parents: document.getElementById('set_bride_parents').value,
+    bride_address: document.getElementById('set_bride_address').value,
+    bride_image: document.getElementById('set_bride_image').value
+  };
+  
+  if (await saveToNpoint(data)) {
+    showToast('Data mempelai berhasil disimpan!');
+  }
+}
+
+async function saveTheme() {
+  const theme = {};
+  ['primary', 'heading', 'accent', 'button'].forEach(c => {
+    theme['color_' + c] = document.getElementById('set_color_' + c).value;
+  });
+  
+  if (await saveToNpoint({ theme })) {
+    showToast('Tema berhasil disimpan!');
+  }
+}
+
+/* ================================================================
+   EVENTS CRUD
+   ================================================================ */
+function renderEventsList() {
+  const container = document.getElementById('eventsList');
+  if (eventsData.length === 0) {
+    container.innerHTML = '<p style="text-align:center; color:#9ca3af; padding: 20px;">Belum ada acara</p>';
+    return;
+  }
+  container.innerHTML = eventsData.map((ev, i) => `
+    <div class="list-item">
+      <div class="list-item-info">
+        <div class="list-item-title">${ev.name || 'Acara ' + (i+1)}</div>
+        <div class="list-item-sub">${ev.date || ''} • ${ev.time || ''}</div>
+      </div>
+      <div class="list-item-actions">
+        <button class="icon-btn edit" onclick="editEvent(${i})"><i class="fas fa-edit"></i></button>
+        <button class="icon-btn delete" onclick="deleteEvent(${i})"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addEvent() {
+  const name = prompt('Nama Acara:');
+  if (!name) return;
+  eventsData.push({ name, day: '', date: '', time: '', location: '', maps: '' });
+  editEvent(eventsData.length - 1);
+}
+
+function editEvent(i) {
+  const ev = eventsData[i];
+  const day = prompt('Hari:', ev.day);
+  if (day === null) return;
+  const date = prompt('Tanggal:', ev.date);
+  if (date === null) return;
+  const time = prompt('Waktu:', ev.time);
+  if (time === null) return;
+  const location = prompt('Lokasi:', ev.location);
+  if (location === null) return;
+  const maps = prompt('Link Maps:', ev.maps);
+  if (maps === null) return;
+  
+  eventsData[i] = { ...ev, day, date, time, location, maps };
+  saveEvents();
+}
+
+function deleteEvent(i) {
+  if (!confirm('Hapus acara ini?')) return;
+  eventsData.splice(i, 1);
+  saveEvents();
+}
+
+async function saveEvents() {
+  renderEventsList();
+  if (await saveToNpoint({ events: eventsData })) {
+    showToast('Data acara disimpan!');
+  }
+}
+
+/* ================================================================
+   STORY CRUD
+   ================================================================ */
+function renderStoryList() {
+  const container = document.getElementById('storyList');
+  if (storiesData.length === 0) {
+    container.innerHTML = '<p style="text-align:center; color:#9ca3af; padding: 20px;">Belum ada story</p>';
+    return;
+  }
+  container.innerHTML = storiesData.map((s, i) => `
+    <div class="list-item">
+      <div class="list-item-info">
+        <div class="list-item-title">${s.title || 'Story ' + (i+1)}</div>
+        <div class="list-item-sub">${s.date || ''}</div>
+      </div>
+      <div class="list-item-actions">
+        <button class="icon-btn edit" onclick="editStory(${i})"><i class="fas fa-edit"></i></button>
+        <button class="icon-btn delete" onclick="deleteStory(${i})"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addStory() {
+  const title = prompt('Judul Story:');
+  if (!title) return;
+  storiesData.push({ title, date: '', text: '', image: '' });
+  editStory(storiesData.length - 1);
+}
+
+function editStory(i) {
+  const s = storiesData[i];
+  const date = prompt('Tanggal:', s.date);
+  if (date === null) return;
+  const text = prompt('Cerita:', s.text);
+  if (text === null) return;
+  const image = prompt('URL Gambar:', s.image);
+  if (image === null) return;
+  
+  storiesData[i] = { ...s, date, text, image };
+  saveStories();
+}
+
+function deleteStory(i) {
+  if (!confirm('Hapus story ini?')) return;
+  storiesData.splice(i, 1);
+  saveStories();
+}
+
+async function saveStories() {
+  renderStoryList();
+  if (await saveToNpoint({ stories: storiesData })) {
+    showToast('Story disimpan!');
+  }
+}
+
+/* ================================================================
+   GALLERY CRUD
+   ================================================================ */
+function renderGalleryList() {
+  const container = document.getElementById('galleryList');
+  if (galleryData.length === 0) {
+    container.innerHTML = '<p style="text-align:center; color:#9ca3af; padding: 20px; grid-column: 1/-1;">Belum ada foto</p>';
+    return;
+  }
+  container.innerHTML = galleryData.map((img, i) => `
+    <div style="position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden;">
+      <img src="${img}" style="width:100%; height:100%; object-fit:cover;">
+      <button onclick="deleteGallery(${i})" style="position:absolute; top:5px; right:5px; background:#ef4444; color:white; border:none; width:24px; height:24px; border-radius:50%; cursor:pointer; font-size:10px;">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  `).join('');
+}
+
+function addGallery() {
+  const url = prompt('URL Gambar:');
+  if (!url) return;
+  galleryData.push(url);
+  saveGallery();
+}
+
+function deleteGallery(i) {
+  if (!confirm('Hapus foto ini?')) return;
+  galleryData.splice(i, 1);
+  saveGallery();
+}
+
+async function saveGallery() {
+  renderGalleryList();
+  if (await saveToNpoint({ gallery: galleryData })) {
+    showToast('Galeri disimpan!');
+  }
+}
+
+/* ================================================================
+   GIFTS CRUD
+   ================================================================ */
+function renderGiftsList() {
+  const container = document.getElementById('giftsList');
+  if (giftsData.length === 0) {
+    container.innerHTML = '<p style="text-align:center; color:#9ca3af; padding: 20px;">Belum ada rekening</p>';
+    return;
+  }
+  container.innerHTML = giftsData.map((g, i) => `
+    <div class="list-item">
+      <div class="list-item-info">
+        <div class="list-item-title">${g.bank || 'Bank'} - ${g.number || ''}</div>
+        <div class="list-item-sub">a.n. ${g.name || ''}</div>
+      </div>
+      <div class="list-item-actions">
+        <button class="icon-btn edit" onclick="editGift(${i})"><i class="fas fa-edit"></i></button>
+        <button class="icon-btn delete" onclick="deleteGift(${i})"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addGift() {
+  const bank = prompt('Nama Bank:');
+  if (!bank) return;
+  giftsData.push({ bank, number: '', name: '', logo: '' });
+  editGift(giftsData.length - 1);
+}
+
+function editGift(i) {
+  const g = giftsData[i];
+  const number = prompt('Nomor Rekening:', g.number);
+  if (number === null) return;
+  const name = prompt('Atas Nama:', g.name);
+  if (name === null) return;
+  const logo = prompt('URL Logo Bank:', g.logo);
+  if (logo === null) return;
+  
+  giftsData[i] = { ...g, number, name, logo };
+  saveGifts();
+}
+
+function deleteGift(i) {
+  if (!confirm('Hapus rekening ini?')) return;
+  giftsData.splice(i, 1);
+  saveGifts();
+}
+
+async function saveGifts() {
+  renderGiftsList();
+  if (await saveToNpoint({ gifts: giftsData })) {
+    showToast('Rekening disimpan!');
+  }
+}
+
+/* ================================================================
+   UCAPAN
+   ================================================================ */
+async function loadUcapanAdmin() {
+  if (!CONFIG.ucapan_api) return;
+  
+  try {
+    const res = await fetch(CONFIG.ucapan_api);
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : (data.list || []);
+    const tbody = document.getElementById('ucapanTbody');
+    
+    if (!list || list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#9ca3af;">Belum ada ucapan</td></tr>';
+      document.getElementById('statUcapan').textContent = '0';
+      document.getElementById('statHadir').textContent = '0';
+      document.getElementById('statTamu').textContent = '0';
+      return;
+    }
+    
+    tbody.innerHTML = list.slice().reverse().map((u, idx) => `
+      <tr>
+        <td><strong>${escapeHtml(u.nama)}</strong></td>
+        <td><span style="padding:3px 8px; border-radius:10px; font-size:11px; color:white; background:${u.ket_hadir == 1 ? '#10b981' : '#ef4444'}">${u.ket_hadir == 1 ? 'Hadir' : 'Tidak'}</span></td>
+        <td>${u.jumlah || 1}</td>
+        <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(u.ucapan)}</td>
+        <td style="font-size:11px;">${formatTime(u.created_at)}</td>
+        <td><button class="icon-btn delete" onclick="deleteUcapan(${list.length - 1 - idx})"><i class="fas fa-trash"></i></button></td>
+      </tr>
+    `).join('');
+    
+    // Update stats
+    document.getElementById('statUcapan').textContent = list.length;
+    document.getElementById('statHadir').textContent = list.filter(u => u.ket_hadir == 1).length;
+    document.getElementById('statTamu').textContent = list.reduce((sum, u) => sum + (parseInt(u.jumlah) || 0), 0);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function deleteUcapan(index) {
+  if (!confirm('Hapus ucapan ini?')) return;
+  
+  try {
+    const res = await fetch(CONFIG.ucapan_api);
+    const list = await res.json();
+    const arr = Array.isArray(list) ? list : (list.list || []);
+    arr.splice(index, 1);
+    
+    await fetch(CONFIG.ucapan_api, {
+      method: 'PATCH',
+      body: JSON.stringify(arr),
+      headers: { 'Content-Type': 'application/json' }
+    });
+    
+    loadUcapanAdmin();
+    showToast('Ucapan dihapus!');
+  } catch (e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+/* ================================================================
+   UTILITIES
+   ================================================================ */
+function showToast(msg, type = 'success') {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.className = 'toast show' + (type === 'error' ? ' error' : '');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function formatTime(dateStr) {
+  if (!dateStr) return '-';
+  const d = new Date(dateStr);
+  return d.toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+}
+
+function previewSite() {
+  window.open('index.html', '_blank');
+}
+
+// Sync color inputs
+['primary', 'heading', 'accent', 'button'].forEach(c => {
+  const color = document.getElementById('set_color_' + c);
+  const text = document.getElementById('set_color_' + c + '_text');
+  if (color && text) {
+    color.addEventListener('input', () => text.value = color.value);
+    text.addEventListener('input', () => {
+      if (/^#[0-9A-F]{6}$/i.test(text.value)) color.value = text.value;
+    });
+  }
+});
+</script>
+
+</body>
+</html>

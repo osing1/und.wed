@@ -1,0 +1,88 @@
+{
+  "cover_title": "Justin & Sisca",
+  "cover_subtitle": "The Wedding Of",
+  "event_date": "2026-02-18T08:00:00",
+  "hero_image": "https://images.unsplash.com/photo-1519741497674-611481863552?w=600",
+  "music_url": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+  "video_url": "",
+  "wa_number": "6285123569250",
+  "groom_name": "Tobias Justin",
+  "groom_short": "Justin",
+  "groom_ig": "@Jessnolimit",
+  "groom_ig_url": "https://instagram.com/Jessnolimit",
+  "groom_parents": "Ayah Justin & Ibu Justin",
+  "groom_address": "Jakarta",
+  "groom_image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500",
+  "bride_name": "Sisca Chol",
+  "bride_short": "Sisca",
+  "bride_ig": "@Siscachol",
+  "bride_ig_url": "https://instagram.com/Siscachol",
+  "bride_parents": "Ayah Sisca & Ibu Sisca",
+  "bride_address": "Jakarta",
+  "bride_image": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500",
+  "ayat_text": "\"Dan di antara tanda-tanda (kebesaran)-Nya ialah bahwa Dia menciptakan pasangan-pasangan untukmu dari (jenis) dirimu sendiri agar kamu merasa tenteram kepadanya.\"",
+  "ayat_source": "— QS. Ar-Rum : 21 —",
+  "thank_image": "https://images.unsplash.com/photo-1519741497674-611481863552?w=600",
+  "thank_text": "Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu kepada kami.\n\nAtas kehadiran dan doa restunya, kami mengucapkan terima kasih.",
+  "story_bg": "",
+  "events": [
+    {
+      "name": "Akad Nikah",
+      "day": "Rabu",
+      "date": "18 Februari 2026",
+      "time": "08:00 - 10:00 WIB",
+      "location": "Jalan Gunung Batur, No. 78, Denpasar, Bali",
+      "maps": "https://maps.google.com"
+    },
+    {
+      "name": "Resepsi Pernikahan",
+      "day": "Selasa",
+      "date": "4 Maret 2025",
+      "time": "11:00 - 14:00 WIB",
+      "location": "Rumah Justin, Jakarta",
+      "maps": "https://maps.google.com"
+    }
+  ],
+  "stories": [
+    {
+      "title": "Pertemuan Pertama",
+      "date": "Januari 2023",
+      "text": "Pertemuan tak terduga yang membawa kami bersama dalam sebuah cerita cinta yang indah.",
+      "image": "https://images.unsplash.com/photo-1519741497674-611481863552?w=400"
+    },
+    {
+      "title": "Lamaran",
+      "date": "Desember 2024",
+      "text": "Hari yang penuh kebahagiaan ketika kami memutuskan untuk melangkah ke jenjang yang lebih serius.",
+      "image": "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=400"
+    }
+  ],
+  "gallery": [
+    "https://images.unsplash.com/photo-1519741497674-611481863552?w=400",
+    "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=400",
+    "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400",
+    "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=400",
+    "https://images.unsplash.com/photo-1519741497674-611481863552?w=400",
+    "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=400"
+  ],
+  "gifts": [
+    {
+      "bank": "BCA",
+      "number": "12345678",
+      "name": "Sisca Kohl",
+      "logo": "https://indoinvite.com/nikah/bank/bca.svg"
+    },
+    {
+      "bank": "Mandiri",
+      "number": "0982309823",
+      "name": "Tobias Justin",
+      "logo": "https://indoinvite.com/nikah/bank/mandiri.svg"
+    }
+  ],
+  "theme": {
+    "color_primary": "#E1E6ED",
+    "color_heading": "#1e1f1e",
+    "color_accent": "#46392E",
+    "color_button": "#46392E"
+  }
+}
